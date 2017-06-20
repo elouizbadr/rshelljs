@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>RShellJS Demo Application</title>
+		<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+		<script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
+		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
+		<style>
+			body {
+				margin-top: 25px;
+			}
+			pre {
+			    white-space: pre-wrap;       /* Since CSS 2.1 */
+			    white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+			    white-space: -pre-wrap;      /* Opera 4-6 */
+			    white-space: -o-pre-wrap;    /* Opera 7 */
+			    word-wrap: break-word;       /* Internet Explorer 5.5+ */
+			}
+			#btnInterrupt {
+				margin-right: 10px;
+			}
+			#output {
+				background-color: #eee;
+			}
+			#command {
+				background-color: #FAFFBD;
+			}
+
+		</style>
+	</head>
+
+	<body>
+		<div class="container">
+			<div id="commandArea" class="row">
+				<div class="col-md-offset-2 col-md-8">
+					<form id="commandForm">
+						<div class="form-group btn-group-sm">
+							<label>Command: </label>
+							<input type="submit" class="btn btn-primary pull-right" value="Execute" />
+							<br />
+							<br />
+							<input type="text" class="form-control" id="command" />
+					</form>
+					<br />
+					<div class="btn-group-sm" >
+						<label>Output: </label>
+						<input type="reset" id="btnReset" class="btn btn-info pull-right" value="Clear" />
+						<button id="btnInterrupt" class="btn btn-danger pull-right" >Interrupt</button>
+					</div>
+					<br />
+					<pre class="form-control" id="output"></pre>
+				</div>
+			</div>
+		</div>
+
+		<script>
+			$(function() {
+    			var socket = io.connect('http://localhost:5000');
+
+				var $commandForm = $('#commandForm');
+				var $command = $('#command');
+				var $output = $('#output');
+
+				// Submit entered Command to Server
+				$commandForm.submit(function(event) {
+					event.preventDefault();
+					socket.emit('command', $command.val());
+					$command.val('');
+					$output.html('');
+				});
+
+				// Listening to incoming Command standard output
+				socket.on('standard output', function(data) {
+					// Display received Command output
+					$output.append(arrayBufferToString(data.output));
+					// Autosize HTML output node to fit text
+					$output.height( $command.height() );
+					$output.height( $output[0].scrollHeight );
+				});
+
+				// Listening to incoming Command error output
+				socket.on('error output', function(data) {
+					// Display received Command output
+					$output.append(data.output);
+					// Autosize HTML output node to fit text
+					$output.height( $command.height() );
+					$output.height( $output[0].scrollHeight );
+				});
+
+				$("#btnReset").click(function() {
+					// Autosize HTML output node to fit text
+					$output.html("");
+					$output.height( $command.height() );
+				});
+
+				$("#btnInterrupt").click(function() {					
+					socket.emit('interruption', null);
+				});
+
+				// Convert Received ArrayBuffer to a String
+				function arrayBufferToString(buffer){
+				    var bufView = new Uint8Array(buffer);
+				    var length = bufView.length;
+				    var result = '';
+				    var addition = Math.pow(2,8)-1;
+
+				    for(var i = 0; i<length; i+=addition){
+				        if(i + addition > length){
+				            addition = length - i;
+				        }
+				        result += String.fromCharCode.apply(null, bufView.subarray(i,i+addition));
+				    }
+
+				    return result;
+				}
+			});
+		</script>
+	</body>
+</html>

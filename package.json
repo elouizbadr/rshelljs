@@ -1,0 +1,22 @@
+{
+  "name": "rshelljs",
+  "version": "0.0.1",
+  "description": "Executing *nix SHELL commands remotely.",
+  "main": "rshell.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "ELOUIZ BADR <elouiz.badr@gmail.com>",
+  "license": "GPL-3.0",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/elouizbadr/rshelljs.git"
+  },
+  "dependencies": {
+  	"socket.io": "~1.0.0",
+  	"shelljs":"~0.7.8"
+  },
+  "engines": {
+    "node": ">=1.0.0"
+  }
+}
