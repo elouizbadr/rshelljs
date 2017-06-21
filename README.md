@@ -17,9 +17,7 @@ A Node.js module that executes commands remotely and returns real-time output.
 
 ## Contributing
 
-	In lieu of a formal style guide, take care to maintain the existing coding style.
-	Add unit tests for any new or changed functionality.
-	Lint and test your code.
+	Please refer to [Contributing Guidelines](CONTRIBUTING.md).
 
 ## License
 	GNU General Public License v3.0
