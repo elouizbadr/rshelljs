@@ -5,19 +5,30 @@ A Node.js module that executes commands remotely and returns real-time output.
 
 ## Installation
 
-	`npm install rshelljs`
+```text
+$ npm install rshelljs
+```
 
 ## Usage
 
-	Run the simple Express demo application inside `demo` folder.
+To have an idea about using this module, please run the simple Express demo application inside `demo` folder:
+
+```text
+$ cd demo/
+$ npm install
+$ node app.js
+```
+
+Now, go to `http://localhost:3000/` in your default browser and explore the demo application.
 
 ## Tests
 
-	`npm test` # TO-DO
+The ability to test the project will be supported shortly. We welcome any suggestion and contribution from you about this matter.
 
 ## Contributing
 
-	Please refer to [Contributing Guidelines](CONTRIBUTING.md).
+Please refer to [Contributing Guidelines](https://github.com/elouizbadr/rshelljs/blob/master/CONTRIBUTING.md).
 
 ## License
-	GNU General Public License v3.0
+
+This projet is open source and licensed under the GNU General Public License v3.0
