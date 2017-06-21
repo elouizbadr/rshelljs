@@ -6,7 +6,9 @@ This section will guide you through the contribution process.
 
 ### Step 1: Fork
 
-Fork the project [on GitHub](https://github.com/elouizbadr/rshelljs) and clone your fork locally.
+First, fork the project [on GitHub](https://github.com/elouizbadr/rshelljs) by clicking on `Fork` on top right corner of the page.
+
+Second, clone your fork locally:
 
 ```text
 $ git clone git@github.com:username/rshelljs.git
