@@ -118,5 +118,5 @@ Feel free to post a comment in the Pull Request to ping reviewers if you are awa
 
 ### Additional Notes:
 
-None.
+For any suggestions, please contact me on my email address `elouiz.badr@gmail.com`
 
