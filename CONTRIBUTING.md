@@ -22,8 +22,8 @@ When developing new features and bug fixes, the `master` branch should be pulled
 
 RShellJS has two main dependencies :
 
-[ShellJS](https://github.com/shelljs/shelljs.git) for portable Unix shell commands for Node.js
-[Socket.IO](https://github.com/socketio/socket.io.git) for realtime application Framework (Node.JS server).
++ [ShellJS](https://github.com/shelljs/shelljs.git) for portable Unix shell commands for Node.js
++ [Socket.IO](https://github.com/socketio/socket.io.git) for realtime application Framework (Node.JS server).
 
 Issues related to any of the dependencies above should reported to their respective projects. We do not accept patches to us.
 
