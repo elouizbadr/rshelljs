@@ -1,6 +1,6 @@
 {
   "name": "rshelljs",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Executing *nix SHELL commands remotely.",
   "main": "rshell.js",
   "scripts": {
