@@ -11,7 +11,13 @@ $ npm install rshelljs
 
 ## Usage
 
-To have an idea about using this module, please run the simple Express demo application inside `demo` folder:
+First, install RshellJS project dependencies by running the following command in the root directory:
+
+```text
+$ npm install
+```
+
+Second, to have an idea about using this module, please run the simple Express demo application inside `demo` folder:
 
 ```text
 $ cd demo/
