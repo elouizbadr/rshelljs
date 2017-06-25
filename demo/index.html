@@ -64,13 +64,13 @@
 				// Submit entered Command to Server
 				$commandForm.submit(function(event) {
 					event.preventDefault();
-					socket.emit('command', $command.val());
+					socket.emit('new_command', $command.val());
 					$command.val('');
 					$output.html('');
 				});
 
 				// Listening to incoming Command standard output
-				socket.on('standard output', function(data) {
+				socket.on('process_running', function(data) {
 					// Display received Command output
 					$output.append(arrayBufferToString(data.output));
 					// Autosize HTML output node to fit text
@@ -79,7 +79,7 @@
 				});
 
 				// Listening to incoming Command error output
-				socket.on('error output', function(data) {
+				socket.on('process_terminated', function(data) {
 					// Display received Command output
 					$output.append(data.output);
 					// Autosize HTML output node to fit text
@@ -94,7 +94,7 @@
 				});
 
 				$("#btnInterrupt").click(function() {					
-					socket.emit('interruption', null);
+					socket.emit('interrupt_command');
 				});
 
 				// Convert Received ArrayBuffer to a String
