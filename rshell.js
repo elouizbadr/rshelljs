@@ -35,29 +35,27 @@ var init = function() {
 				// Add this child process to the list
 				childProcesses.push(child);
 
+				// Check If the spawned Command was launched
+				if(!child.connected) {
+					io.sockets.emit('process_started');
+				}
+
 				// Listening to Child Process events
 				child.on('error', function(err) { 
 					// When Child Process is unable to spawn the requested command
 					let error = "Unknown or invalid command.";
-					io.sockets.emit('process_failed', {output: error});
+					io.sockets.emit('process_failed', {output: err});
 				});
 
 				child.on('disconnect', function() {
 					// When Child Process has been detached from its parent 
 					// process (i.e. Node server process).
-					io.sockets.emit('process_detached', {output: error});
+					io.sockets.emit('process_detached');
 				});
 
 				child.on('exit', function(code, signal) {
-					// When Child Process is terminated gracefully
-					let exitStatus = " code = null ";
-					let signalString = " signal = null ";
-					if(code != null) 
-						exitStatus = " code = " + code;
-					if(signal != null) 
-						signalString = " signal = " + signal;
-					// Sending output back to Client
-					io.sockets.emit('process_ended', {output: exitStatus+signal});
+					// When Child Process finishes and exits
+					io.sockets.emit('process_exited', {output: {code: code, signal: signal}});
 				});
 
 				// Listening to Child Process STDOUT events
@@ -68,17 +66,17 @@ var init = function() {
 
 				child.stdout.on('error', function (err) { 
 					// When an Error occurs
-					io.sockets.emit('process_terminated', {output: err});
+					io.sockets.emit('process_stdout_error', {output: err});
 				});
 
 				child.stdout.on('close', function () {
 					// When Stream has been closed
-					io.sockets.emit('process_ended');
+					io.sockets.emit('process_stdout_closed');
 				});
 
 				child.stdout.on('end', function () { 
 					// When there's no more ongoing data
-					io.sockets.emit('process_ended');
+					io.sockets.emit('process_stdout_ended');
 				});
 
 				// Listening to Child Process STDERR events
@@ -89,17 +87,17 @@ var init = function() {
 
 				child.stderr.on('error', function (err) {
 					// When an Error occurs
-					io.sockets.emit('process_terminated', {output: err});
+					io.sockets.emit('process_stderr_error', {output: err});
 				});
 
 				child.stderr.on('close', function () { 
 					// When Stream has been closed
-					io.sockets.emit('process_ended');
+					io.sockets.emit('process_stderr_closed');
 				});
 
 				child.stderr.on('end', function () { 
 					// When no more ongoing data
-					io.sockets.emit('process_ended');
+					io.sockets.emit('process_stderr_ended');
 				});
 
 			}
@@ -110,7 +108,14 @@ var init = function() {
 			// Interrupt all running processes
 			for(var i=0; i<childProcesses.length; i++) {
 				childProcesses[i].kill('SIGINT');
-				io.sockets.emit('process_interrupted', {output: childProcesses[i].pid});
+			}
+		});
+
+		// When Socket.IO Client sends Kill command
+		socket.on('kill_command', function() {
+			// Kill all running processes
+			for(var i=0; i<childProcesses.length; i++) {
+				childProcesses[i].kill('SIGKILL');
 			}
 		});
 

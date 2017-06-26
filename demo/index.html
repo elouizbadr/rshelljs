@@ -42,10 +42,20 @@
 							<input type="text" class="form-control" id="command" />
 					</form>
 					<br />
-					<div class="btn-group-sm" >
-						<label>Output: </label>
-						<input type="reset" id="btnReset" class="btn btn-info pull-right" value="Clear" />
-						<button id="btnInterrupt" class="btn btn-danger pull-right" >Interrupt</button>
+
+					<div class="row">
+						<div class="col-md-6">
+							<label>Output: </label>
+						</div>
+						<div class="col-md-4 btn-group-sm">
+							<button id="btnInterrupt" class="btn btn-warning" >Interrupt</button>
+							<button id="btnKill" class="btn btn-danger" >Kill</button>
+							<button	id="btnClear" class="btn btn-info" >Clear</button>
+						</div>
+						<div class="col-md-2">
+							<label>Status:  </label>
+							<span id="status"></span>
+						</div>
 					</div>
 					<br />
 					<pre class="form-control" id="output"></pre>
@@ -60,6 +70,7 @@
 				var $commandForm = $('#commandForm');
 				var $command = $('#command');
 				var $output = $('#output');
+				var $status = $('#status');
 
 				// Submit entered Command to Server
 				$commandForm.submit(function(event) {
@@ -69,6 +80,28 @@
 					$output.html('');
 				});
 
+				// Listening to incoming Command error output
+				socket.on('process_started', function() {
+					// Updating Status
+					console.log('Process: Started');
+					$status.html('Started');
+				});
+
+				// Listening to incoming Command error output
+				socket.on('process_exited', function(data) {
+					// Updating Status
+					console.log('Process: Exited');
+					if(data.output.signal != null) {
+						console.log('\tSignal: ' + data.output.signal);
+						$status.html('Killed');
+						$('#btnClear').trigger("click");
+					} 
+					if(data.output.code != null) {
+						console.log('\tCode: ' + data.output.code); 
+						$status.html('Exited (' + data.output.code + ')');
+					}
+				});
+
 				// Listening to incoming Command standard output
 				socket.on('process_running', function(data) {
 					// Display received Command output
@@ -76,18 +109,63 @@
 					// Autosize HTML output node to fit text
 					$output.height( $command.height() );
 					$output.height( $output[0].scrollHeight );
+					// Updating Status
+					console.log('Process: Running');
+					$status.html('Running');
 				});
 
 				// Listening to incoming Command error output
-				socket.on('process_terminated', function(data) {
-					// Display received Command output
-					$output.append(data.output);
-					// Autosize HTML output node to fit text
-					$output.height( $command.height() );
-					$output.height( $output[0].scrollHeight );
+				socket.on('process_stdout_error', function(err) {
+					// Updating Status
+					console.log('STDOUT: Error');
 				});
 
-				$("#btnReset").click(function() {
+				// Listening to incoming Command error output
+				socket.on('process_stdout_closed', function(err) {
+					// Updating Status
+					console.log('STDOUT: Closed');
+				});
+
+				// Listening to incoming Command error output
+				socket.on('process_stdout_ended', function(err) {
+					// Updating Status
+					console.log('STDOUT: Ended');
+				});
+
+				// Listening to incoming Command error output
+				socket.on('process_stderr_error', function(err) {
+					// Updating Status
+					console.log('STDERR: Error');
+				});
+
+				// Listening to incoming Command error output
+				socket.on('process_stderr_closed', function(err) {
+					// Updating Status
+					console.log('STDERR: Closed');
+				});
+
+				// Listening to incoming Command error output
+				socket.on('process_stderr_ended', function(err) {
+					// Updating Status
+					console.log('STDERR: Ended');
+				});
+
+				// Listening to incoming Command error output
+				socket.on('process_detached', function(data) {
+					// Updating Status
+					console.log('Process: Detached');
+					$status.html('Detached');
+				});
+
+				// Listening to incoming Command error output
+				socket.on('process_failed', function(data) {
+					// Updating Status
+					console.log('Process: Failed');
+					$status.html('Failed');
+				});
+
+
+				$("#btnClear").click(function() {
 					// Autosize HTML output node to fit text
 					$output.html("");
 					$output.height( $command.height() );
@@ -95,6 +173,10 @@
 
 				$("#btnInterrupt").click(function() {					
 					socket.emit('interrupt_command');
+				});
+
+				$("#btnKill").click(function() {					
+					socket.emit('kill_command');
 				});
 
 				// Convert Received ArrayBuffer to a String
