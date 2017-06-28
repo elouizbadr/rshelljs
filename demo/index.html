@@ -65,6 +65,8 @@
 
 		<script>
 			$(function() {
+				// If Server application is not installed on the same machine,
+				// change "localhost" to the corresponding ip address.
     			var socket = io.connect('http://localhost:5000');
 				var debug = true;
 
@@ -84,22 +86,27 @@
 
 				// Listening to incoming Command error output
 				socket.on('process_started', function() {
-					// Updating Status
+					//Debug
 					if(debug) console.log('Process: Started');
+					// Updating Status
 					$status.html('Started');
 				});
 
 				// Listening to incoming Command error output
 				socket.on('process_exited', function(data) {
-					// Updating Status
+					//Debug
 					if(debug) console.log('Process: Exited');
 					if(data.output.signal != null) {
-						console.log('\tSignal: ' + data.output.signal);
+						//Debug
+						if(debug) console.log('\tSignal: ' + data.output.signal);
+						// Updating Status
 						$status.html('Killed');
 						$('#btnClear').trigger("click");
 					} 
 					if(data.output.code != null) {
+						//Debug
 						if(debug) console.log('\tCode: ' + data.output.code); 
+						// Updating Status
 						$status.html('Exited (' + data.output.code + ')');
 					}
 				});
@@ -111,58 +118,61 @@
 					// Autosize HTML output node to fit text
 					$output.height( $command.height() );
 					$output.height( $output[0].scrollHeight );
-					// Updating Status
+					// Debug
 					if(debug) console.log('Process: Running');
+					// Updating Status
 					$status.html('Running');
 				});
 
 				// Listening to incoming Command error output
 				socket.on('process_stdout_error', function(err) {
-					// Updating Status
+					// Debug
 					if(debug) console.log('STDOUT: Error');
 				});
 
 				// Listening to incoming Command error output
 				socket.on('process_stdout_closed', function(err) {
-					// Updating Status
+					// Debug
 					if(debug) console.log('STDOUT: Closed');
 				});
 
 				// Listening to incoming Command error output
 				socket.on('process_stdout_ended', function(err) {
-					// Updating Status
+					// Debug
 					if(debug) console.log('STDOUT: Ended');
 				});
 
 				// Listening to incoming Command error output
 				socket.on('process_stderr_error', function(err) {
-					// Updating Status
+					// Debug
 					if(debug) console.log('STDERR: Error');
 				});
 
 				// Listening to incoming Command error output
 				socket.on('process_stderr_closed', function(err) {
-					// Updating Status
+					// Debug
 					if(debug) console.log('STDERR: Closed');
 				});
 
 				// Listening to incoming Command error output
 				socket.on('process_stderr_ended', function(err) {
-					// Updating Status
+					// Debug
 					if(debug) console.log('STDERR: Ended');
 				});
 
 				// Listening to incoming Command error output
 				socket.on('process_detached', function(data) {
-					// Updating Status
+					// Debug
 					if(debug) console.log('Process: Detached');
+					// Updating Status
 					$status.html('Detached');
 				});
 
 				// Listening to incoming Command error output
 				socket.on('process_failed', function(data) {
-					// Updating Status
+					// Debug
 					if(debug) console.log('Process: Failed');
+					// Updating Status
 					$status.html('Failed');
 				});
 
