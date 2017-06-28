@@ -66,6 +66,7 @@
 		<script>
 			$(function() {
     			var socket = io.connect('http://localhost:5000');
+				var debug = true;
 
 				var $commandForm = $('#commandForm');
 				var $command = $('#command');
@@ -76,6 +77,7 @@
 				$commandForm.submit(function(event) {
 					event.preventDefault();
 					socket.emit('new_command', $command.val());
+					if(debug) console.log('new_command(' + $command.val() + ').');
 					$command.val('');
 					$output.html('');
 				});
@@ -83,21 +85,21 @@
 				// Listening to incoming Command error output
 				socket.on('process_started', function() {
 					// Updating Status
-					console.log('Process: Started');
+					if(debug) console.log('Process: Started');
 					$status.html('Started');
 				});
 
 				// Listening to incoming Command error output
 				socket.on('process_exited', function(data) {
 					// Updating Status
-					console.log('Process: Exited');
+					if(debug) console.log('Process: Exited');
 					if(data.output.signal != null) {
 						console.log('\tSignal: ' + data.output.signal);
 						$status.html('Killed');
 						$('#btnClear').trigger("click");
 					} 
 					if(data.output.code != null) {
-						console.log('\tCode: ' + data.output.code); 
+						if(debug) console.log('\tCode: ' + data.output.code); 
 						$status.html('Exited (' + data.output.code + ')');
 					}
 				});
@@ -110,57 +112,57 @@
 					$output.height( $command.height() );
 					$output.height( $output[0].scrollHeight );
 					// Updating Status
-					console.log('Process: Running');
+					if(debug) console.log('Process: Running');
 					$status.html('Running');
 				});
 
 				// Listening to incoming Command error output
 				socket.on('process_stdout_error', function(err) {
 					// Updating Status
-					console.log('STDOUT: Error');
+					if(debug) console.log('STDOUT: Error');
 				});
 
 				// Listening to incoming Command error output
 				socket.on('process_stdout_closed', function(err) {
 					// Updating Status
-					console.log('STDOUT: Closed');
+					if(debug) console.log('STDOUT: Closed');
 				});
 
 				// Listening to incoming Command error output
 				socket.on('process_stdout_ended', function(err) {
 					// Updating Status
-					console.log('STDOUT: Ended');
+					if(debug) console.log('STDOUT: Ended');
 				});
 
 				// Listening to incoming Command error output
 				socket.on('process_stderr_error', function(err) {
 					// Updating Status
-					console.log('STDERR: Error');
+					if(debug) console.log('STDERR: Error');
 				});
 
 				// Listening to incoming Command error output
 				socket.on('process_stderr_closed', function(err) {
 					// Updating Status
-					console.log('STDERR: Closed');
+					if(debug) console.log('STDERR: Closed');
 				});
 
 				// Listening to incoming Command error output
 				socket.on('process_stderr_ended', function(err) {
 					// Updating Status
-					console.log('STDERR: Ended');
+					if(debug) console.log('STDERR: Ended');
 				});
 
 				// Listening to incoming Command error output
 				socket.on('process_detached', function(data) {
 					// Updating Status
-					console.log('Process: Detached');
+					if(debug) console.log('Process: Detached');
 					$status.html('Detached');
 				});
 
 				// Listening to incoming Command error output
 				socket.on('process_failed', function(data) {
 					// Updating Status
-					console.log('Process: Failed');
+					if(debug) console.log('Process: Failed');
 					$status.html('Failed');
 				});
 
@@ -169,14 +171,20 @@
 					// Autosize HTML output node to fit text
 					$output.html("");
 					$output.height( $command.height() );
+					// Debug
+					if(debug) console.log('button Clear was clicked!');
 				});
 
 				$("#btnInterrupt").click(function() {					
 					socket.emit('interrupt_command');
+					// Debug
+					if(debug) console.log('"interrupt_command" sent.');
 				});
 
 				$("#btnKill").click(function() {					
 					socket.emit('kill_command');
+					// Debug
+					if(debug) console.log('"kill_command" sent.');
 				});
 
 				// Convert Received ArrayBuffer to a String
@@ -192,6 +200,9 @@
 				        }
 				        result += String.fromCharCode.apply(null, bufView.subarray(i,i+addition));
 				    }
+					
+					// Debug
+					if(debug) console.log('arrayBufferToString() called. result: ' + result);
 
 				    return result;
 				}
