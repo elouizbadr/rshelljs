@@ -27,6 +27,8 @@ $ node app.js
 
 Now, go to `http://localhost:3000/` in your default browser and explore the demo application.
 
+Note: If you access the demo application from a machine other than your local one, make sure to use your demo application's ``app.js`` server ip address instead of "localhost".
+
 ## Tests
 
 The ability to test the project will be supported shortly. We welcome any suggestion and contribution from you about this matter.
